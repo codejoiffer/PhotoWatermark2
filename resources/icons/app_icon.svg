@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!-- 背景 -->
+  <rect width="256" height="256" fill="#4A90E2" rx="24" ry="24"/>
+  
+  <!-- 相机轮廓 -->
+  <rect x="64" y="64" width="128" height="128" fill="#FFFFFF" rx="8" ry="8"/>
+  <rect x="72" y="72" width="112" height="88" fill="#F5F5F5" rx="4" ry="4"/>
+  
+  <!-- 相机镜头 -->
+  <circle cx="128" cy="112" r="32" fill="#4A90E2"/>
+  <circle cx="128" cy="112" r="24" fill="#357ABD"/>
+  <circle cx="128" cy="112" r="16" fill="#2968A0"/>
+  <circle cx="128" cy="112" r="8" fill="#FFFFFF" opacity="0.6"/>
+  
+  <!-- 水印标志 -->
+  <text x="128" y="184" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#4A90E2">W</text>
+  <circle cx="128" cy="184" r="20" fill="none" stroke="#4A90E2" stroke-width="3"/>
+</svg>
