@@ -737,7 +737,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 ImageProcessor.save_image(
                     self.current_image,
                     self.current_image_path,
-                    output_format=output_settings['format'],
+                    format=output_settings['format'],
                     quality=output_settings['quality']
                 )
                 
@@ -790,7 +790,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 ImageProcessor.save_image(
                     self.current_image,
                     file_path,
-                    output_format=output_settings['format'],
+                    format=output_settings['format'],
                     quality=output_settings['quality']
                 )
                 

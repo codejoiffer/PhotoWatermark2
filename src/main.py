@@ -27,6 +27,16 @@ def main():
     main_window = MainWindow()
     main_window.show()
     
+    # 自动加载测试图片进行测试
+    test_image_path = os.path.join(os.path.dirname(__file__), "..", "lucky_pig.jpeg")
+    print(f"测试图片路径: {test_image_path}")
+    if os.path.exists(test_image_path):
+        print("测试图片存在，正在加载...")
+        main_window.open_file_from_path(test_image_path)
+        print("测试图片加载成功")
+    else:
+        print("警告: 测试图片不存在")
+    
     # 运行应用程序
     sys.exit(app.exec())
 

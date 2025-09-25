@@ -58,6 +58,34 @@ class ImageProcessor:
             raise Exception(f"保存图片失败: {str(e)}")
     
     @staticmethod
+    def _get_text_size(draw, text, font):
+        """
+        获取文本尺寸的兼容性方法
+        兼容PIL/Pillow的新旧版本
+        """
+        try:
+            # 尝试使用较新版本的方法
+            if hasattr(draw, 'textbbox'):
+                # 获取文本边界框 (left, top, right, bottom)
+                bbox = draw.textbbox((0, 0), text, font=font)
+                return bbox[2] - bbox[0], bbox[3] - bbox[1]
+            elif hasattr(font, 'getbbox'):
+                # 尝试使用字体的getbbox方法
+                bbox = font.getbbox(text)
+                return bbox[2] - bbox[0], bbox[3] - bbox[1]
+            else:
+                # 回退到旧版本的textsize方法
+                return draw.textsize(text, font=font)
+        except Exception:
+            # 出现任何错误时，使用合理的默认值
+            # 从字体中获取大小或使用默认值
+            try:
+                default_size = font.size if hasattr(font, 'size') else 20
+                return default_size * len(text) // 2, default_size
+            except:
+                return 20 * len(text) // 2, 20
+    
+    @staticmethod
     def add_text_watermark(image, text, position, font_name=None, font_size=20, 
                           font_color=(255, 255, 255, 128), rotation=0):
         """
@@ -68,18 +96,48 @@ class ImageProcessor:
         draw = ImageDraw.Draw(watermark_image, 'RGBA')
         
         # 加载字体
+        font = None
         try:
             if font_name:
                 font = ImageFont.truetype(font_name, font_size)
             else:
-                # 使用默认字体
-                font = ImageFont.load_default()
+                # 尝试使用支持中文的默认字体
+                # 尝试多种常见的中文字体
+                chinese_fonts = ['SimHei', 'WenQuanYi Micro Hei', 'Heiti TC', 'Arial Unicode MS', 'Microsoft YaHei']
+                font_loaded = False
+                for f_name in chinese_fonts:
+                    try:
+                        font = ImageFont.truetype(f_name, font_size)
+                        font_loaded = True
+                        break
+                    except:
+                        continue
+                
+                if not font_loaded:
+                    # 最后使用系统默认字体
+                    font = ImageFont.load_default()
         except Exception:
-            # 如果指定字体加载失败，使用默认字体
-            font = ImageFont.load_default()
+            # 如果指定字体加载失败，尝试使用中文字体
+            try:
+                chinese_fonts = ['SimHei', 'WenQuanYi Micro Hei', 'Heiti TC', 'Arial Unicode MS', 'Microsoft YaHei']
+                font_loaded = False
+                for f_name in chinese_fonts:
+                    try:
+                        font = ImageFont.truetype(f_name, font_size)
+                        font_loaded = True
+                        break
+                    except:
+                        continue
+                
+                if not font_loaded:
+                    # 最后使用系统默认字体
+                    font = ImageFont.load_default()
+            except:
+                # 如果所有尝试都失败，使用默认字体
+                font = ImageFont.load_default()
         
         # 获取文本尺寸
-        text_width, text_height = draw.textsize(text, font=font)
+        text_width, text_height = ImageProcessor._get_text_size(draw, text, font)
         
         # 计算水印位置
         img_width, img_height = watermark_image.size
@@ -204,18 +262,48 @@ class ImageProcessor:
             draw = ImageDraw.Draw(watermark_image, 'RGBA')
             
             # 加载字体
+            font = None
             try:
                 if font_name:
                     font = ImageFont.truetype(font_name, font_size)
                 else:
-                    # 使用默认字体
-                    font = ImageFont.load_default()
+                    # 尝试使用支持中文的默认字体
+                    # 尝试多种常见的中文字体
+                    chinese_fonts = ['SimHei', 'WenQuanYi Micro Hei', 'Heiti TC', 'Arial Unicode MS', 'Microsoft YaHei']
+                    font_loaded = False
+                    for f_name in chinese_fonts:
+                        try:
+                            font = ImageFont.truetype(f_name, font_size)
+                            font_loaded = True
+                            break
+                        except:
+                            continue
+                    
+                    if not font_loaded:
+                        # 最后使用系统默认字体
+                        font = ImageFont.load_default()
             except Exception:
-                # 如果指定字体加载失败，使用默认字体
-                font = ImageFont.load_default()
+                # 如果指定字体加载失败，尝试使用中文字体
+                try:
+                    chinese_fonts = ['SimHei', 'WenQuanYi Micro Hei', 'Heiti TC', 'Arial Unicode MS', 'Microsoft YaHei']
+                    font_loaded = False
+                    for f_name in chinese_fonts:
+                        try:
+                            font = ImageFont.truetype(f_name, font_size)
+                            font_loaded = True
+                            break
+                        except:
+                            continue
+                    
+                    if not font_loaded:
+                        # 最后使用系统默认字体
+                        font = ImageFont.load_default()
+                except:
+                    # 如果所有尝试都失败，使用默认字体
+                    font = ImageFont.load_default()
             
             # 获取文本尺寸
-            text_width, text_height = draw.textsize(text, font=font)
+            text_width, text_height = ImageProcessor._get_text_size(draw, text, font)
             
             # 创建文本图像
             text_img = Image.new('RGBA', (text_width, text_height), (255, 255, 255, 0))

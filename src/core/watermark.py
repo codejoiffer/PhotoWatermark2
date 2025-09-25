@@ -92,15 +92,45 @@ class Watermark:
         draw = ImageDraw.Draw(watermark_image, 'RGBA')
         
         # 加载字体
+        font = None
         try:
             if self.font_name:
                 font = ImageFont.truetype(self.font_name, self.font_size)
             else:
-                # 使用默认字体
-                font = ImageFont.load_default()
+                # 尝试使用支持中文的默认字体
+                # 尝试多种常见的中文字体
+                chinese_fonts = ['SimHei', 'WenQuanYi Micro Hei', 'Heiti TC', 'Arial Unicode MS', 'Microsoft YaHei']
+                font_loaded = False
+                for font_name in chinese_fonts:
+                    try:
+                        font = ImageFont.truetype(font_name, self.font_size)
+                        font_loaded = True
+                        break
+                    except:
+                        continue
+                
+                if not font_loaded:
+                    # 最后使用系统默认字体
+                    font = ImageFont.load_default()
         except Exception:
-            # 如果指定字体加载失败，使用默认字体
-            font = ImageFont.load_default()
+            # 如果指定字体加载失败，尝试使用中文字体
+            try:
+                chinese_fonts = ['SimHei', 'WenQuanYi Micro Hei', 'Heiti TC', 'Arial Unicode MS', 'Microsoft YaHei']
+                font_loaded = False
+                for font_name in chinese_fonts:
+                    try:
+                        font = ImageFont.truetype(font_name, self.font_size)
+                        font_loaded = True
+                        break
+                    except:
+                        continue
+                
+                if not font_loaded:
+                    # 最后使用系统默认字体
+                    font = ImageFont.load_default()
+            except:
+                # 如果所有尝试都失败，使用默认字体
+                font = ImageFont.load_default()
         
         # 获取文本尺寸
         text_width, text_height = self._get_text_size(draw, self.text, font)
