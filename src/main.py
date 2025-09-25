@@ -1,7 +1,8 @@
-import sys
 import os
+import sys
 from PyQt6 import QtWidgets
 from PyQt6 import QtGui
+
 
 from ui.main_window import MainWindow
 

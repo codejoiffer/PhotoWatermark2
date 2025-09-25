@@ -3,6 +3,8 @@ from PIL import Image, ImageDraw, ImageFont
 import io
 from core.image_processor import ImageProcessor
 import json
+import os
+
 class Watermark:
     """
     水印处理类，提供文本水印和图片水印的添加功能

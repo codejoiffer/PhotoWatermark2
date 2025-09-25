@@ -1,0 +1,57 @@
+# 虚拟环境
+venv/
+env/
+
+# Python编译文件
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 操作系统文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 临时文件
+*.swp
+*.swo
+*~
+
+# 日志文件
+*.log
+*.log.*
+
+# IDE配置文件
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 构建文件
+build/
+dist/
+*.egg-info/
+
+# 测试和覆盖率
+.coverage
+.tox/
+pytest_cache/
+
+# 环境变量
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# MacOS应用程序相关
+*.app/
+*.dmg
+*.pkg
