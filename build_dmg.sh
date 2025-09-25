@@ -34,10 +34,10 @@ fi
 echo "使用PyInstaller打包应用程序..."
 pyinstaller --name="PhotoWatermark2" \
             --windowed \
-            --icon="${PROJECT_DIR}/resources/icons/app_icon.svg" \
             --add-data="${PROJECT_DIR}/resources/icons:resources/icons" \
             --distpath="${OUTPUT_DIR}" \
             --workpath="${BUILD_DIR}" \
+            --noconfirm \
             "${PROJECT_DIR}/src/main.py"
 
 # 检查PyInstaller是否成功
@@ -62,7 +62,6 @@ fi
 # 使用create-dmg创建安装包
 create-dmg \
   --volname "PhotoWatermark2 安装包" \
-  --volicon "${PROJECT_DIR}/resources/icons/app_icon.svg" \
   --window-pos 200 120 \
   --window-size 800 400 \
   --icon-size 100 \
