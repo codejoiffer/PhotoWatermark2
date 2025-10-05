@@ -21,11 +21,13 @@ from PyQt6.QtCore import (
     Qt, QSize, QRect, QPoint, QThread, pyqtSignal
 )
 
-from core.image_processor import ImageProcessor
-from core.watermark import Watermark
-from core.batch_processor import BatchProcessor
-from utils.template_manager import TemplateManager
-from utils.config import ConfigManager
+from src.core.image_processor import ImageProcessor
+from src.core.watermark import Watermark
+from src.core.batch_processor import BatchProcessor
+from src.utils.template_manager import TemplateManager
+from src.utils.config import ConfigManager
+from src.utils.logger import info, warning, error
+
 
 class MainWindow(QtWidgets.QMainWindow):
     """
@@ -673,43 +675,57 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         打开文件对话框，选择图片文件
         """
+        info("打开文件对话框")
         # 获取支持的图片格式
         supported_formats = ImageProcessor.SUPPORTED_FORMATS
         
-        # 构建文件过滤器
-        filter_str = "图片文件 (" + " ".join([f"*{ext}" for ext in supported_formats]) + ")"
-        filter_str += ";;所有文件 (*.*)"
+        # 构建文件过滤器 - 使用PyQt6推荐的格式
+        image_formats_str = " ".join([f"*{ext}" for ext in supported_formats])
+        filter_str = f"图片文件 ({image_formats_str});;所有文件 (*)"
+        info(f"文件过滤器: {filter_str}")
         
-        # 打开文件对话框
+        # 打开文件对话框 - 指定使用原生对话框样式
         file_path, _ = QFileDialog.getOpenFileName(
-            self, "打开图片", "", filter_str
+            self, "打开图片", os.path.expanduser("~"), filter_str,
+            options=QFileDialog.Option.DontUseNativeDialog
         )
         
         if file_path:
+            info(f"选择的文件路径: {file_path}")
             self.open_file_from_path(file_path)
+        else:
+            info("未选择任何文件")
     
     def open_file_from_path(self, file_path):
         """
         从文件路径打开图片
         """
         try:
+            info(f"尝试加载图片: {file_path}")
             # 加载图片
             self.current_image_path = file_path
             self.current_image = ImageProcessor.load_image(file_path)
+            info(f"图片加载成功: {os.path.basename(file_path)}")
             
             # 更新预览
+            info("更新图片预览")
             self.update_preview()
+            info("预览更新完成")
             
             # 更新图片信息
+            info("更新图片信息")
             self.update_image_info()
             
             # 添加到最近文件
+            info("添加到最近文件列表")
             self.config_manager.add_recent_file(file_path)
             
             # 更新状态
             self.status_label.setText(f"已加载: {os.path.basename(file_path)}")
+            info(f"状态更新: 已加载 - {os.path.basename(file_path)}")
             
         except Exception as e:
+            error(f"加载图片失败: {str(e)}")
             QMessageBox.critical(self, "错误", f"加载图片失败: {str(e)}")
     
     def open_folder(self):
@@ -1185,18 +1201,25 @@ class MainWindow(QtWidgets.QMainWindow):
         # 获取支持的图片格式
         supported_formats = ImageProcessor.SUPPORTED_FORMATS
         
-        # 构建文件过滤器
-        filter_str = "图片文件 (" + " ".join([f"*.{ext.lower()}" for ext in supported_formats]) + ")"
-        filter_str += ";;所有文件 (*.*)"
+        # 构建文件过滤器 - 移除扩展名前的点号，因为SUPPORTED_FORMATS中已经包含了
+        image_formats_str = " ".join([f"*{ext}" for ext in supported_formats])
+        filter_str = f"图片文件 ({image_formats_str});;所有文件 (*)"
         
-        # 打开文件对话框
+        # 记录日志
+        info("打开水印图片选择对话框")
+        
+        # 打开文件对话框，设置初始目录为用户主目录，并使用Qt非原生对话框
         file_path, _ = QFileDialog.getOpenFileName(
-            self, "选择水印图片", "", filter_str
+            self, "选择水印图片", os.path.expanduser("~"), filter_str,
+            options=QFileDialog.Option.DontUseNativeDialog
         )
         
         if file_path:
             # 更新水印图片路径
             self.watermark_image_path_edit.setText(file_path)
+            info(f"选择水印图片: {file_path}")
+        else:
+            info("未选择任何水印图片")
 
 # 添加QInputDialog导入，因为在save_current_template和load_template方法中使用了
 from PyQt6.QtWidgets import QInputDialog, QLineEdit

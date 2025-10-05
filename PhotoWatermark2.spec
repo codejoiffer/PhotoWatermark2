@@ -3,10 +3,29 @@
 
 a = Analysis(
     ['/Users/joiffer/Desktop/选课/大语言模型辅助软件工程/HomeWork/PhotoWatermark2/src/main.py'],
-    pathex=[],
+    pathex=['/Users/joiffer/Desktop/选课/大语言模型辅助软件工程/HomeWork/PhotoWatermark2'],
     binaries=[],
-    datas=[('/Users/joiffer/Desktop/选课/大语言模型辅助软件工程/HomeWork/PhotoWatermark2/resources/icons', 'resources/icons')],
-    hiddenimports=[],
+    datas=[
+        ('/Users/joiffer/Desktop/选课/大语言模型辅助软件工程/HomeWork/PhotoWatermark2/resources/icons', 'resources/icons'),
+        ('/Users/joiffer/Desktop/选课/大语言模型辅助软件工程/HomeWork/PhotoWatermark2/resources/fonts', 'resources/fonts')
+    ],
+    hiddenimports=[
+        'PyQt5.QtCore',
+        'PyQt5.QtGui',
+        'PyQt5.QtWidgets',
+        'PIL',
+        'PIL.Image',
+        'PIL.ImageDraw',
+        'PIL.ImageFont',
+        'src.core.image_processor',
+        'src.core.watermark',
+        'src.core.batch_processor',
+        'src.ui.main_window',
+        'src.utils.config',
+        'src.utils.logger',
+        'src.utils.font_manager',
+        'src.utils.template_manager'
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

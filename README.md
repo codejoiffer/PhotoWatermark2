@@ -31,7 +31,12 @@ PhotoWatermark2是一款运行在MacOS上的图片水印工具，旨在为用户
   - `ui/`：界面相关代码
   - `core/`：核心功能实现
   - `utils/`：工具类和辅助函数
+- `resources/`：资源文件目录
+  - `fonts/`：中文字体目录
+  - `icons/`：图标资源
 - `run_app.sh`：启动脚本
+- `check_fonts.py`：字体检查脚本
+- `test_chinese_watermark.py`：中文水印测试脚本
 
 ## 如何运行
 
@@ -58,6 +63,47 @@ PhotoWatermark2是一款运行在MacOS上的图片水印工具，旨在为用户
    ```
    python src/main.py
    ```
+
+## 字体管理与中文显示
+
+PhotoWatermark2包含一个专门的字体管理系统，用于确保中文水印能够正确显示。
+
+### 字体加载机制
+
+应用程序使用`FontManager`类管理字体加载，它会按照以下优先级尝试加载字体：
+
+1. 首先尝试从缓存中加载
+2. 然后尝试从指定路径加载字体文件
+3. 接着尝试从系统已安装的中文字体中加载
+4. 最后尝试从`resources/fonts`目录加载
+
+支持的中文字体包括：SimHei、WenQuanYi Micro Hei、Heiti TC、Arial Unicode MS、Microsoft YaHei、PingFang SC等。
+
+### 字体目录
+
+应用程序会在`resources/fonts`目录中查找中文字体文件。如果您遇到中文显示问题，可以将.ttf或.otf格式的中文字体文件放入此目录。
+
+### 字体检查和测试
+
+项目提供了两个辅助脚本来帮助排查字体问题：
+
+#### 字体检查脚本
+
+该脚本用于检查系统中是否安装了中文字体，并验证FontManager是否能正确加载这些字体。
+
+```bash
+python check_fonts.py
+```
+
+#### 中文水印测试脚本
+
+该脚本用于测试中文水印显示功能，会生成带有中文水印的示例图片。
+
+```bash
+python test_chinese_watermark.py
+```
+
+测试结果将保存在`test_results`目录中，您可以查看这些图片以确认中文水印是否正确显示。
 
 ## 使用指南
 
@@ -87,7 +133,10 @@ PhotoWatermark2是一款运行在MacOS上的图片水印工具，旨在为用户
 ## 常见问题解答
 
 ### Q: 为什么我的中文字体显示不正确？
-A: 应用程序会自动尝试加载系统中可用的中文字体，包括SimHei、WenQuanYi Micro Hei、Heiti TC、Arial Unicode MS、Microsoft YaHei等。如果所有尝试都失败，会使用系统默认字体。确保您的系统已安装中文字体。
+A: 应用程序会自动尝试加载系统中可用的中文字体，包括SimHei、WenQuanYi Micro Hei、Heiti TC、Arial Unicode MS、Microsoft YaHei等。如果所有尝试都失败，会使用系统默认字体。确保您的系统已安装中文字体。您可以运行`python check_fonts.py`检查系统字体情况，也可以将.ttf格式的中文字体文件放入`resources/fonts`目录。
+
+### Q: 如何测试中文水印是否能正确显示？
+A: 您可以运行`python test_chinese_watermark.py`脚本，它会生成带有中文水印的示例图片并保存到`test_results`目录。
 
 ### Q: 我可以调整水印的位置吗？
 A: 是的，您可以在预设位置中选择（左上、右上、左下、右下、居中），也可以在预览窗口中手动拖拽水印到任意位置。

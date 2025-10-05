@@ -2,8 +2,8 @@ import os
 import threading
 import queue
 import os
-from core.image_processor import ImageProcessor
-from core.watermark import Watermark
+from src.core.image_processor import ImageProcessor
+from src.core.watermark import Watermark
 
 class BatchProcessor:
     """
