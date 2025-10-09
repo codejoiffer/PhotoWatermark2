@@ -153,6 +153,61 @@ A: 配置文件和模板保存在用户目录下的`~/Library/Application Suppor
 ### Q: 如何调整输出图片的质量？
 A: 您可以在输出设置中调整图片质量参数，范围为1-100，数值越高质量越好。
 
+## 应用程序打包与分发
+
+### 打包应用程序
+
+如果您需要将应用程序打包为独立的Mac应用程序包(.app)，请按照以下步骤操作：
+
+1. 确保您的系统已安装PyInstaller：
+   ```bash
+   pip install pyinstaller
+   ```
+
+2. 使用提供的.spec文件打包应用程序：
+   ```bash
+   pyinstaller PhotoWatermark2.spec
+   ```
+
+3. 打包完成后，可执行的应用程序将位于`dist/PhotoWatermark2.app`目录中
+
+### 运行打包后的应用程序
+
+**重要提示**：由于macOS的安全机制和PyInstaller打包特性，直接双击`PhotoWatermark2.app`图标可能会导致应用程序在Dock栏短暂出现后立即消失。请按照以下方法运行应用程序：
+
+#### 方法一：使用启动脚本（推荐）
+
+1. 打开终端应用程序
+2. 导航到应用程序所在目录：
+   ```bash
+   cd dist
+   ```
+3. 运行启动脚本：
+   ```bash
+   bash start_photo_watermark.sh
+   ```
+
+#### 方法二：通过AppleScript启动器
+
+1. 在`dist`目录中找到`启动PhotoWatermark2.applescript`文件
+2. 右键点击该文件，选择"打开"（首次运行可能需要确认）
+3. 应用程序将通过终端启动
+
+#### 方法三：通过终端直接运行
+
+1. 打开终端应用程序
+2. 运行以下命令：
+   ```bash
+   ./dist/PhotoWatermark2.app/Contents/MacOS/PhotoWatermark2
+   ```
+
+### 移除隔离属性
+
+如果您遇到权限问题，可以使用以下命令移除应用程序的隔离属性：
+```bash
+xattr -cr dist/PhotoWatermark2.app
+```
+
 ## 升级说明
 
 当升级到新版本时，您的配置和模板数据将会被保留。新版本会自动识别并使用您已有的设置，无需重新配置。
