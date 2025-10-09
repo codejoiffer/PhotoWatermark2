@@ -1,7 +1,7 @@
 import os
+import sys
 import logging
 import datetime
-import os
 from logging.handlers import RotatingFileHandler
 
 
@@ -20,8 +20,16 @@ class Logger:
     
     def __init__(self):
         if not Logger._initialized:
-            # 简化日志路径为当前工作目录下的logs文件夹，方便测试
-            self.log_dir = os.path.join(os.getcwd(), 'logs')
+            # 获取基础路径，支持PyInstaller打包
+            base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            
+            # 对于macOS应用程序，使用用户的Application Support目录存储日志
+            if sys.platform == 'darwin':  # macOS
+                app_support_dir = os.path.expanduser('~/Library/Application Support/PhotoWatermark2')
+                self.log_dir = os.path.join(app_support_dir, 'logs')
+            else:
+                # 其他平台使用应用程序目录下的logs文件夹
+                self.log_dir = os.path.join(base_path, 'logs')
             
             # 确保日志目录存在
             self._ensure_log_dir_exists()

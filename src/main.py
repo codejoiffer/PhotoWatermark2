@@ -3,8 +3,12 @@ import sys
 from PyQt6 import QtWidgets
 from PyQt6 import QtGui
 
+# 处理PyInstaller打包后的资源路径
+# 当应用程序被打包后，sys._MEIPASS会指向临时解压目录
+base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 # 确保能正确导入项目模块
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(base_path)
 
 from src.ui.main_window import MainWindow
 from src.utils.logger import info, warning, error
@@ -17,7 +21,7 @@ def main():
     os.environ["QT_FONT_DPI"] = "96"
     # 告诉Qt使用Unicode字体
     os.environ["QT_QPA_FONTDIR"] = os.path.join(
-        os.path.dirname(__file__), "..", "resources", "fonts")
+        base_path, "resources", "fonts")
     # 确保matplotlib等库也能正确显示中文
     os.environ["MPLCONFIGDIR"] = os.path.join(
         os.path.dirname(__file__), "..", ".matplotlib")
@@ -32,7 +36,7 @@ def main():
     info(f"应用程序版本: {app.applicationVersion()}")
     
     # 设置应用程序图标
-    icon_path = os.path.join(os.path.dirname(__file__), "..", "resources", "icons", "app_icon.svg")
+    icon_path = os.path.join(base_path, "resources", "icons", "app_icon.svg")
     if os.path.exists(icon_path):
         app.setWindowIcon(QtGui.QIcon(icon_path))
         info(f"已设置应用图标: {icon_path}")
@@ -46,7 +50,7 @@ def main():
     info("主窗口已显示")
     
     # 自动加载测试图片进行测试
-    test_image_path = os.path.join(os.path.dirname(__file__), "..", "lucky_pig.jpeg")
+    test_image_path = os.path.join(base_path, "lucky_pig.jpeg")
     info(f"测试图片路径: {test_image_path}")
     if os.path.exists(test_image_path):
         info("测试图片存在，正在加载...")

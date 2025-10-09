@@ -3,8 +3,11 @@ import sys
 from PIL import ImageFont
 import logging
 
+# 获取基础路径，支持PyInstaller打包
+base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 # 添加项目根目录到Python路径
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.append(base_path)
 
 # 导入日志模块
 from .logger import info, warning, error
@@ -19,10 +22,25 @@ class FontManager:
         # 字体缓存，避免重复加载
         self.font_cache = {}
         
+        # 字体配置文件路径
+        font_config_path = os.path.join(base_path, 'resources', 'fonts', 'font_config.py')
+        
         # 导入字体配置
         try:
-            from resources.fonts.font_config import chinese_fonts
-            self.chinese_fonts = chinese_fonts
+            # 尝试从文件导入配置
+            if os.path.exists(font_config_path):
+                import importlib.util
+                spec = importlib.util.spec_from_file_location("font_config", font_config_path)
+                font_config = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(font_config)
+                self.chinese_fonts = font_config.chinese_fonts
+            else:
+                # 如果配置文件不存在，尝试直接导入模块
+                try:
+                    from resources.fonts.font_config import chinese_fonts
+                    self.chinese_fonts = chinese_fonts
+                except:
+                    raise Exception("字体配置模块不存在")
         except Exception as e:
             warning(f"加载字体配置失败: {str(e)}")
             # 使用默认的中文字体列表
@@ -31,10 +49,7 @@ class FontManager:
             ]
         
         # 本地字体目录
-        self.local_font_dir = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-            'fonts'
-        )
+        self.local_font_dir = os.path.join(base_path, 'resources', 'fonts')
         info(f"本地字体目录: {self.local_font_dir}")
     
     def load_font(self, font_name=None, font_size=24):

@@ -1,5 +1,4 @@
 import os
-import os
 from PIL import Image, ImageDraw, ImageFont
 import io
 from src.utils.font_manager import font_manager
